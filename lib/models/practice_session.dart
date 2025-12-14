@@ -4,6 +4,7 @@ import 'bowliards_data.dart';
 import 'one_pocket_ghost_data.dart';
 import 'game_day_data.dart';
 import 'competition_data.dart';
+import 'nine_ball_credence_ghost_data.dart';
 
 part 'practice_session.g.dart';
 
@@ -29,6 +30,8 @@ class PracticeSession extends HiveObject {
   final GameDayData? gameDayData;
   @HiveField(9)
   final CompetitionData? competitionData;
+  @HiveField(10)
+  final NineBallCredenceGhostData? nineBallCredenceGhostData;
 
   PracticeSession({
     required this.id,
@@ -41,5 +44,6 @@ class PracticeSession extends HiveObject {
     this.onePocketGhostData,
     this.gameDayData,
     this.competitionData,
+    this.nineBallCredenceGhostData,
   });
 }

@@ -9,6 +9,7 @@ import 'bowliards_logging_screen.dart';
 import 'competition_logging_screen.dart';
 import 'game_day_logging_sheet.dart';
 import 'one_pocket_ghost_logging_screen.dart';
+import 'nine_ball_credence_ghost_logging_screen.dart';
 
 class DaySessionsScreen extends StatefulWidget {
   final DateTime date;
@@ -24,6 +25,7 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
     PracticeType.onePocketGhost: Color(0xFF5E60CE),
     PracticeType.gameDay: Color(0xFFF4A259),
     PracticeType.competition: Color(0xFFE24E59),
+    PracticeType.nineBallCredenceGhost: Color(0xFF32B5C5),
   };
 
   late PracticeSessionRepository _repository;
@@ -91,6 +93,15 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
               ),
             ),
           );
+        case PracticeType.nineBallCredenceGhost:
+          return Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => NineBallCredenceGhostLoggingScreen(
+                date: session.date,
+                initialSession: session,
+              ),
+            ),
+          );
       }
     }
 
@@ -135,6 +146,13 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
               builder: (_) => CompetitionLoggingScreen(date: widget.date),
             ),
           );
+        case PracticeType.nineBallCredenceGhost:
+          return Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) =>
+                  NineBallCredenceGhostLoggingScreen(date: widget.date),
+            ),
+          );
       }
     }
 
@@ -169,41 +187,40 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _sessions.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.crop_free, size: 40, color: Colors.white54),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Nincs feljegyzés erre a napra',
-                        style: Theme.of(context).textTheme.titleMedium,
-                      ),
-                      const SizedBox(height: 4),
-                      Text(
-                        'Koppints az "Új bejegyzés" gombra és kezdd el a napot.',
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .bodySmall
-                            ?.copyWith(color: Colors.white70),
-                      ),
-                    ],
+          ? Center(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.crop_free, size: 40, color: Colors.white54),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Nincs feljegyzés erre a napra',
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
-                )
-              : ListView.separated(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _sessions.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final session = _sessions[index];
-                    return SessionListTile(
-                      session: session,
-                      color: _colorForType(session.type),
-                      onTap: () => _editSession(session),
-                    );
-                  },
-                ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Koppints az "Új bejegyzés" gombra és kezdd el a napot.',
+                    textAlign: TextAlign.center,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodySmall?.copyWith(color: Colors.white70),
+                  ),
+                ],
+              ),
+            )
+          : ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemCount: _sessions.length,
+              separatorBuilder: (_, __) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                final session = _sessions[index];
+                return SessionListTile(
+                  session: session,
+                  color: _colorForType(session.type),
+                  onTap: () => _editSession(session),
+                );
+              },
+            ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addSession,
         icon: const Icon(Icons.add),

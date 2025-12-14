@@ -67,11 +67,17 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final bowliardsSessions = sessions
         .where((s) => s.type == PracticeType.bowliards)
         .toList();
-    final opgSessions =
-      sessions.where((s) => s.type == PracticeType.onePocketGhost).toList();
+    final opgSessions = sessions
+        .where((s) => s.type == PracticeType.onePocketGhost)
+        .toList();
+    final credenceSessions = sessions
+        .where((s) => s.type == PracticeType.nineBallCredenceGhost)
+        .toList();
 
-    final bowliardsEvents =
-        _buildEventSeries(bowliardsSessions, (s) => s.totalScore?.toDouble());
+    final bowliardsEvents = _buildEventSeries(
+      bowliardsSessions,
+      (s) => s.totalScore?.toDouble(),
+    );
     final bowliardsWeekly = _buildWeeklyAverages(
       bowliardsSessions,
       (s) => s.totalScore?.toDouble(),
@@ -84,6 +90,20 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
     final opgWeekly = _buildWeeklyAverages(
       opgSessions,
       (s) => s.totalScore?.toDouble(),
+    );
+
+    double? _credenceScoreSelector(PracticeSession session) {
+      return session.nineBallCredenceGhostData?.totalScore ??
+          session.totalScore?.toDouble();
+    }
+
+    final credenceEvents = _buildEventSeries(
+      credenceSessions,
+      _credenceScoreSelector,
+    );
+    final credenceWeekly = _buildWeeklyAverages(
+      credenceSessions,
+      _credenceScoreSelector,
     );
 
     final practiceCardConfigs = <PracticeType, _PracticeStatsCardConfig>{
@@ -105,8 +125,18 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         valueFormatter: (value) => value.toStringAsFixed(0),
         summary: _buildSummary(opgEvents),
       ),
+      PracticeType.nineBallCredenceGhost: _PracticeStatsCardConfig(
+        title: '9 Ball Credence',
+        color: Colors.cyan,
+        eventPoints: credenceEvents,
+        weeklyPoints: _filterByRange(credenceWeekly, _weeklyRange),
+        unitSuffix: ' cb',
+        valueFormatter: (value) => value.toStringAsFixed(1),
+        summary: _buildSummary(credenceEvents),
+      ),
     };
-    final selectedPracticeType = practiceCardConfigs.containsKey(_selectedPracticeType)
+    final selectedPracticeType =
+        practiceCardConfigs.containsKey(_selectedPracticeType)
         ? _selectedPracticeType
         : practiceCardConfigs.keys.first;
     final selectedPracticeConfig = practiceCardConfigs[selectedPracticeType]!;
@@ -127,9 +157,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   (entry) => ChoiceChip(
                     label: Text(entry.value.title),
                     selected: entry.key == selectedPracticeType,
-                    onSelected: (_) => setState(
-                      () => _selectedPracticeType = entry.key,
-                    ),
+                    onSelected: (_) =>
+                        setState(() => _selectedPracticeType = entry.key),
                   ),
                 )
                 .toList(),
@@ -179,15 +208,11 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       final weekStart = _startOfWeek(session.date);
       buckets.putIfAbsent(weekStart, () => _Accumulator()).add(value);
     }
-    final points = buckets.entries
-        .map(
-          (entry) => _ChartPoint(
-            entry.key,
-            entry.value.average,
-          ),
-        )
-        .toList()
-      ..sort((a, b) => a.date.compareTo(b.date));
+    final points =
+        buckets.entries
+            .map((entry) => _ChartPoint(entry.key, entry.value.average))
+            .toList()
+          ..sort((a, b) => a.date.compareTo(b.date));
     return points;
   }
 
@@ -211,7 +236,6 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       median: median,
     );
   }
-
 }
 
 class _PracticeStatsCardConfig {
@@ -235,11 +259,7 @@ class _PracticeStatsCardConfig {
 }
 
 class _PracticeStatsSummary {
-  const _PracticeStatsSummary({
-    this.maxPoint,
-    this.average,
-    this.median,
-  });
+  const _PracticeStatsSummary({this.maxPoint, this.average, this.median});
 
   final _ChartPoint? maxPoint;
   final double? average;
@@ -353,7 +373,9 @@ class _PracticeSummaryMetrics extends StatelessWidget {
             children: [
               for (var i = 0; i < tiles.length; i++)
                 Padding(
-                  padding: EdgeInsets.only(bottom: i == tiles.length - 1 ? 0 : spacing),
+                  padding: EdgeInsets.only(
+                    bottom: i == tiles.length - 1 ? 0 : spacing,
+                  ),
                   child: tiles[i],
                 ),
             ],
@@ -365,7 +387,9 @@ class _PracticeSummaryMetrics extends StatelessWidget {
             for (var i = 0; i < tiles.length; i++)
               Expanded(
                 child: Padding(
-                  padding: EdgeInsets.only(right: i == tiles.length - 1 ? 0 : spacing),
+                  padding: EdgeInsets.only(
+                    right: i == tiles.length - 1 ? 0 : spacing,
+                  ),
                   child: tiles[i],
                 ),
               ),
@@ -398,7 +422,9 @@ class _SummaryTile extends StatelessWidget {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         color: baseColor,
-        border: Border.all(color: theme.colorScheme.outlineVariant.withOpacity(0.5)),
+        border: Border.all(
+          color: theme.colorScheme.outlineVariant.withOpacity(0.5),
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -419,14 +445,13 @@ class _SummaryTile extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             value,
-            style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+            style: theme.textTheme.titleMedium?.copyWith(
+              fontWeight: FontWeight.w700,
+            ),
           ),
           if (subtitle != null) ...[
             const SizedBox(height: 2),
-            Text(
-              subtitle!,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(subtitle!, style: theme.textTheme.bodySmall),
           ],
         ],
       ),
@@ -482,10 +507,8 @@ class _LineChartCard extends StatelessWidget {
   LineChartData _buildData() {
     final spots = points
         .map(
-          (point) => FlSpot(
-            point.date.millisecondsSinceEpoch.toDouble(),
-            point.value,
-          ),
+          (point) =>
+              FlSpot(point.date.millisecondsSinceEpoch.toDouble(), point.value),
         )
         .toList();
     final minX = spots.first.x;
@@ -493,7 +516,9 @@ class _LineChartCard extends StatelessWidget {
     final minY = points.map((p) => p.value).reduce(math.min);
     final maxY = points.map((p) => p.value).reduce(math.max);
     final yPadding = (maxY - minY).abs() < 1 ? 1.5 : (maxY - minY) * 0.1;
-    final xPadding = minX == maxX ? const Duration(days: 1).inMilliseconds.toDouble() : 0;
+    final xPadding = minX == maxX
+        ? const Duration(days: 1).inMilliseconds.toDouble()
+        : 0;
 
     return LineChartData(
       minX: minX - xPadding,
@@ -504,7 +529,9 @@ class _LineChartCard extends StatelessWidget {
       borderData: FlBorderData(show: false),
       titlesData: FlTitlesData(
         topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-        rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+        rightTitles: const AxisTitles(
+          sideTitles: SideTitles(showTitles: false),
+        ),
         leftTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
@@ -576,10 +603,7 @@ class _RangeSelector extends StatelessWidget {
   final StatsRange selected;
   final ValueChanged<StatsRange> onChanged;
 
-  const _RangeSelector({
-    required this.selected,
-    required this.onChanged,
-  });
+  const _RangeSelector({required this.selected, required this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -629,10 +653,7 @@ class _ErrorState extends StatelessWidget {
         children: [
           const Text('Nem sikerült betölteni a statisztikát.'),
           const SizedBox(height: 12),
-          ElevatedButton(
-            onPressed: onRetry,
-            child: const Text('Újra'),
-          ),
+          ElevatedButton(onPressed: onRetry, child: const Text('Újra')),
         ],
       ),
     );
@@ -669,12 +690,7 @@ List<_ChartPoint> _filterByRange(List<_ChartPoint> points, StatsRange range) {
   return points.where((p) => !p.date.isBefore(_startOfWeek(cutoff))).toList();
 }
 
-enum StatsRange {
-  last4,
-  last10,
-  last52,
-  all,
-}
+enum StatsRange { last4, last10, last52, all }
 
 extension StatsRangeX on StatsRange {
   int? get weeks {

@@ -27,13 +27,14 @@ class PracticeSessionAdapter extends TypeAdapter<PracticeSession> {
       onePocketGhostData: fields[7] as OnePocketGhostData?,
       gameDayData: fields[8] as GameDayData?,
       competitionData: fields[9] as CompetitionData?,
+      nineBallCredenceGhostData: fields[10] as NineBallCredenceGhostData?,
     );
   }
 
   @override
   void write(BinaryWriter writer, PracticeSession obj) {
     writer
-      ..writeByte(10)
+      ..writeByte(11)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -53,7 +54,9 @@ class PracticeSessionAdapter extends TypeAdapter<PracticeSession> {
       ..writeByte(8)
       ..write(obj.gameDayData)
       ..writeByte(9)
-      ..write(obj.competitionData);
+      ..write(obj.competitionData)
+      ..writeByte(10)
+      ..write(obj.nineBallCredenceGhostData);
   }
 
   @override

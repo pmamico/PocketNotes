@@ -12,4 +12,6 @@ enum PracticeType {
   gameDay,
   @HiveField(3)
   competition,
+  @HiveField(4)
+  nineBallCredenceGhost,
 }

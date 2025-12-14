@@ -4,12 +4,7 @@ import 'package:table_calendar/table_calendar.dart';
 import '../data/practice_session_repository.dart';
 import '../models/practice_session.dart';
 import '../models/practice_type.dart';
-import '../widgets/practice_type_selector.dart';
 import '../widgets/pocket_notes_logo.dart';
-import 'bowliards_logging_screen.dart';
-import 'one_pocket_ghost_logging_screen.dart';
-import 'game_day_logging_sheet.dart';
-import 'competition_logging_screen.dart';
 import 'day_sessions_screen.dart';
 import 'statistics_screen.dart';
 
@@ -30,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
     PracticeType.onePocketGhost: Color(0xFF5E60CE),
     PracticeType.gameDay: Color(0xFFF4A259),
     PracticeType.competition: Color(0xFFE24E59),
+    PracticeType.nineBallCredenceGhost: Color(0xFF32B5C5),
   };
 
   @override
@@ -62,11 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
   Color _colorForType(PracticeType type) => _typeColors[type] ?? Colors.grey;
 
   Future<void> _openDaySessions(DateTime day) async {
-    await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => DaySessionsScreen(date: day),
-      ),
-    );
+    await Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => DaySessionsScreen(date: day)));
     if (!mounted) return;
     await _loadSessionsForMonth(_focusedDay);
   }
@@ -103,27 +97,25 @@ class _HomeScreenState extends State<HomeScreen> {
     final localizations = MaterialLocalizations.of(context);
     final dayLabel = localizations.formatFullDate(selectedDay);
     final monthLabel = localizations.formatMonthYear(_focusedDay);
-    final totalMonthSessions =
-        _sessionsByDay.values.fold<int>(0, (sum, list) => sum + list.length);
+    final totalMonthSessions = _sessionsByDay.values.fold<int>(
+      0,
+      (sum, list) => sum + list.length,
+    );
     final labelStyle =
         theme.textTheme.labelMedium ?? const TextStyle(color: Colors.white70);
     final bodyStyle =
         theme.textTheme.bodyMedium ?? const TextStyle(color: Colors.white);
     final calendarTitleStyle =
-      (theme.textTheme.titleMedium ?? const TextStyle()).copyWith(
-      fontWeight: FontWeight.w600,
-    );
+        (theme.textTheme.titleMedium ?? const TextStyle()).copyWith(
+          fontWeight: FontWeight.w600,
+        );
 
     return DecoratedBox(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0xFF030C07),
-            Color(0xFF05160F),
-            Color(0xFF0B3A28),
-          ],
+          colors: [Color(0xFF030C07), Color(0xFF05160F), Color(0xFF0B3A28)],
         ),
       ),
       child: Scaffold(
@@ -139,10 +131,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'PocketNotes',
-                    style: theme.textTheme.titleLarge,
-                  ),
+                  Text('PocketNotes', style: theme.textTheme.titleLarge),
                   Text(
                     'Biliárd edzésnapló',
                     style: theme.textTheme.labelSmall?.copyWith(
@@ -159,9 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
               tooltip: 'Statisztikák',
               onPressed: () {
                 Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const StatisticsScreen(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const StatisticsScreen()),
                 );
               },
             ),
@@ -249,9 +236,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                     ),
                                     outsideDaysVisible: false,
                                   ),
-                                  calendarBuilders: CalendarBuilders<PracticeSession>(
-                                    markerBuilder: _buildMarker,
-                                  ),
+                                  calendarBuilders:
+                                      CalendarBuilders<PracticeSession>(
+                                        markerBuilder: _buildMarker,
+                                      ),
                                 ),
                               ),
                             ),
@@ -265,7 +253,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
@@ -279,7 +268,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   const SizedBox(width: 12),
                                   FilledButton.icon(
-                                    onPressed: () => _openDaySessions(selectedDay),
+                                    onPressed: () =>
+                                        _openDaySessions(selectedDay),
                                     icon: const Icon(Icons.open_in_new),
                                     label: const Text('Nap megnyitása'),
                                   ),
@@ -298,12 +288,15 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 }
 
-
 class _PocketPanel extends StatelessWidget {
   final Widget child;
   final EdgeInsetsGeometry padding;
   final EdgeInsetsGeometry? margin;
-  const _PocketPanel({required this.child, this.padding = const EdgeInsets.all(16), this.margin});
+  const _PocketPanel({
+    required this.child,
+    this.padding = const EdgeInsets.all(16),
+    this.margin,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -314,10 +307,7 @@ class _PocketPanel extends StatelessWidget {
         gradient: const LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: [
-            Color(0x4426402C),
-            Color(0x11000000),
-          ],
+          colors: [Color(0x4426402C), Color(0x11000000)],
         ),
         border: Border.all(color: Colors.white.withOpacity(0.08)),
         boxShadow: [
@@ -332,9 +322,7 @@ class _PocketPanel extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
         child: Container(
           padding: padding,
-          decoration: BoxDecoration(
-            color: Colors.black.withOpacity(0.25),
-          ),
+          decoration: BoxDecoration(color: Colors.black.withOpacity(0.25)),
           child: child,
         ),
       ),

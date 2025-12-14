@@ -21,6 +21,8 @@ class PracticeTypeAdapter extends TypeAdapter<PracticeType> {
         return PracticeType.gameDay;
       case 3:
         return PracticeType.competition;
+      case 4:
+        return PracticeType.nineBallCredenceGhost;
       default:
         return PracticeType.bowliards;
     }
@@ -40,6 +42,9 @@ class PracticeTypeAdapter extends TypeAdapter<PracticeType> {
         break;
       case PracticeType.competition:
         writer.writeByte(3);
+        break;
+      case PracticeType.nineBallCredenceGhost:
+        writer.writeByte(4);
         break;
     }
   }

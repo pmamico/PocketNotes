@@ -23,21 +23,39 @@ class SessionListTile extends StatelessWidget {
       case PracticeType.bowliards:
         title = 'Bowliards – ${session.totalScore ?? '-'} pont';
         icon = FontAwesomeIcons.bowlingBall;
-        details.add('Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}');
+        details.add(
+          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+        );
         break;
       case PracticeType.onePocketGhost:
         final total = session.totalScore?.toString() ?? '-';
         title = 'One Pocket Ghost – összesen $total pont';
         icon = FontAwesomeIcons.ghost;
-        details.add('Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}');
+        details.add(
+          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+        );
+        break;
+      case PracticeType.nineBallCredenceGhost:
+        final totalCredence = session.totalScore != null
+            ? '${session.totalScore} cb'
+            : '-';
+        title = '9 Ball Credence – $totalCredence';
+        icon = FontAwesomeIcons.bullseye;
+        details.add(
+          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+        );
+        final avg = session.averageScore;
+        if (avg != null) {
+          details.add('Átlag: ${avg.toStringAsFixed(1)} cb');
+        }
         break;
       case PracticeType.gameDay:
         final mood = session.gameDayData?.satisfaction;
         final rating = mood == 1
             ? 'Elégedett'
             : mood == -1
-                ? 'Elégedetlen'
-                : 'Nincs értékelés';
+            ? 'Elégedetlen'
+            : 'Nincs értékelés';
         title = 'Játéknap – $rating';
         icon = FontAwesomeIcons.faceGrinStars;
         break;
@@ -59,8 +77,8 @@ class SessionListTile extends StatelessWidget {
         final verdict = verdictValue == 1
             ? 'Elégedett'
             : verdictValue == -1
-                ? 'Elégedetlen'
-                : 'Nincs értékelés';
+            ? 'Elégedetlen'
+            : 'Nincs értékelés';
         details.add(verdict);
         break;
     }
@@ -81,10 +99,7 @@ class SessionListTile extends StatelessWidget {
             gradient: LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [
-                color.withOpacity(0.28),
-                color.withOpacity(0.08),
-              ],
+              colors: [color.withOpacity(0.28), color.withOpacity(0.08)],
             ),
             border: Border.all(color: color.withOpacity(0.5)),
           ),

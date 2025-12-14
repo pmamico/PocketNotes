@@ -30,6 +30,11 @@ class PracticeTypeSelector extends StatelessWidget {
             onTap: () => onSelected(PracticeType.onePocketGhost),
           ),
           ListTile(
+            leading: const FaIcon(FontAwesomeIcons.bullseye),
+            title: const Text('9 Ball Credence'),
+            onTap: () => onSelected(PracticeType.nineBallCredenceGhost),
+          ),
+          ListTile(
             leading: const FaIcon(FontAwesomeIcons.faceGrinStars),
             title: const Text('Játéknap'),
             onTap: () => onSelected(PracticeType.gameDay),
