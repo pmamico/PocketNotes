@@ -55,7 +55,7 @@ class _GameDayLoggingSheetState extends State<GameDayLoggingSheet> {
     final rating = _satisfaction;
     if (rating == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Válassz elégedettséget.')),
+        const SnackBar(content: Text('Select a satisfaction rating.')),
       );
       return;
     }
@@ -89,22 +89,22 @@ class _GameDayLoggingSheetState extends State<GameDayLoggingSheet> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Játéknap - $dateLabel',
+            Text('Game day - $dateLabel',
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 16),
-            Text('Elégedettség',
+            Text('Satisfaction',
                 style: Theme.of(context).textTheme.titleSmall),
             const SizedBox(height: 8),
             Wrap(
               spacing: 8,
               children: [
                 ChoiceChip(
-                  label: const Text('Elégedett'),
+                  label: const Text('Satisfied'),
                   selected: _satisfaction == 1,
                   onSelected: (selected) => _toggleSatisfaction(1, selected),
                 ),
                 ChoiceChip(
-                  label: const Text('Elégedetlen'),
+                  label: const Text('Unsatisfied'),
                   selected: _satisfaction == -1,
                   onSelected: (selected) => _toggleSatisfaction(-1, selected),
                 ),
@@ -115,7 +115,7 @@ class _GameDayLoggingSheetState extends State<GameDayLoggingSheet> {
               controller: _noteController,
               maxLines: 3,
               decoration: const InputDecoration(
-                labelText: 'Jegyzet',
+                labelText: 'Notes',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -125,7 +125,7 @@ class _GameDayLoggingSheetState extends State<GameDayLoggingSheet> {
               children: [
                 TextButton(
                   onPressed: _saving ? null : () => Navigator.of(context).pop(),
-                  child: const Text('Mégse'),
+                  child: const Text('Cancel'),
                 ),
                 const SizedBox(width: 12),
                 ElevatedButton(
@@ -136,7 +136,7 @@ class _GameDayLoggingSheetState extends State<GameDayLoggingSheet> {
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Mentés'),
+                      : const Text('Save'),
                 ),
               ],
             ),

@@ -43,7 +43,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Statisztikák')),
+      appBar: AppBar(title: const Text('Statistics')),
       body: FutureBuilder<List<PracticeSession>>(
         future: _sessionsFuture,
         builder: (context, snapshot) {
@@ -112,7 +112,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         color: Colors.teal,
         eventPoints: bowliardsEvents,
         weeklyPoints: _filterByRange(bowliardsWeekly, _weeklyRange),
-        unitSuffix: ' pont',
+        unitSuffix: ' pts',
         valueFormatter: (value) => value.toStringAsFixed(0),
         summary: _buildSummary(bowliardsEvents),
       ),
@@ -121,7 +121,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         color: Colors.indigo,
         eventPoints: opgEvents,
         weeklyPoints: _filterByRange(opgWeekly, _weeklyRange),
-        unitSuffix: ' pont',
+        unitSuffix: ' pts',
         valueFormatter: (value) => value.toStringAsFixed(0),
         summary: _buildSummary(opgEvents),
       ),
@@ -148,7 +148,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 24),
         children: [
-          Text('Gyakorlatok', style: theme.textTheme.titleLarge),
+          Text('Practice types', style: theme.textTheme.titleLarge),
           const SizedBox(height: 8),
           Wrap(
             spacing: 8,
@@ -296,7 +296,7 @@ class _PracticeStatsCard extends StatelessWidget {
             Text(title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 12),
             _LineChartCard(
-              title: 'Események',
+              title: 'Sessions',
               color: color,
               points: eventPoints,
               unitSuffix: unitSuffix,
@@ -304,7 +304,7 @@ class _PracticeStatsCard extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _LineChartCard(
-              title: 'Heti átlag',
+              title: 'Weekly average',
               color: color,
               points: weeklyPoints,
               unitSuffix: unitSuffix,
@@ -340,24 +340,24 @@ class _PracticeSummaryMetrics extends StatelessWidget {
     final tiles = [
       _SummaryTile(
         icon: Icons.military_tech,
-        title: 'Legmagasabb pont',
+        title: 'Highest score',
         value: summary.maxPoint != null
             ? '${valueFormatter(summary.maxPoint!.value)}$unitSuffix'
             : '—',
         subtitle: summary.maxPoint != null
             ? localizations.formatMediumDate(summary.maxPoint!.date)
-            : 'Nincs adat',
+          : 'No data',
       ),
       _SummaryTile(
         icon: Icons.show_chart,
-        title: 'Átlag',
+        title: 'Average',
         value: summary.average != null
             ? '${valueFormatter(summary.average!)}$unitSuffix'
             : '—',
       ),
       _SummaryTile(
         icon: Icons.timeline,
-        title: 'Medián',
+        title: 'Median',
         value: summary.median != null
             ? '${valueFormatter(summary.median!)}$unitSuffix'
             : '—',
@@ -493,7 +493,7 @@ class _LineChartCard extends StatelessWidget {
             child: points.isEmpty
                 ? Center(
                     child: Text(
-                      'Nincs adat',
+                      'No data',
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   )
@@ -634,7 +634,7 @@ class _EmptyState extends StatelessWidget {
         physics: const AlwaysScrollableScrollPhysics(),
         children: const [
           SizedBox(height: 120),
-          Center(child: Text('Még nincs rögzített esemény.')),
+          Center(child: Text('No logged sessions yet.')),
         ],
       ),
     );
@@ -651,9 +651,9 @@ class _ErrorState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Text('Nem sikerült betölteni a statisztikát.'),
+          const Text("Couldn't load statistics."),
           const SizedBox(height: 12),
-          ElevatedButton(onPressed: onRetry, child: const Text('Újra')),
+          ElevatedButton(onPressed: onRetry, child: const Text('Retry')),
         ],
       ),
     );
@@ -709,13 +709,13 @@ extension StatsRangeX on StatsRange {
   String get label {
     switch (this) {
       case StatsRange.last4:
-        return 'Utóbbi 4 hét';
+        return 'Last 4 weeks';
       case StatsRange.last10:
-        return 'Utóbbi 10 hét';
+        return 'Last 10 weeks';
       case StatsRange.last52:
-        return 'Utóbbi 52 hét';
+        return 'Last 52 weeks';
       case StatsRange.all:
-        return 'Összes';
+        return 'All time';
     }
   }
 }

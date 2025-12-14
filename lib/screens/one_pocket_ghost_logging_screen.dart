@@ -98,11 +98,11 @@ class _OnePocketGhostLoggingScreenState
             _buildRackInput(_currentRack),
             const SizedBox(height: 24),
             Text(
-              'Összpont: $_totalScore',
+              'Total score: $_totalScore',
               style: Theme.of(context).textTheme.titleLarge,
             ),
             Text(
-              'Rack átlag: ${_averageScore.toStringAsFixed(2)}',
+              'Rack average: ${_averageScore.toStringAsFixed(2)}',
               style: Theme.of(context)
                   .textTheme
                   .titleMedium

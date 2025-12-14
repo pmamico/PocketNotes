@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../data/practice_session_repository.dart';
@@ -27,6 +28,14 @@ class _HomeScreenState extends State<HomeScreen> {
     PracticeType.competition: Color(0xFFE24E59),
     PracticeType.nineBallCredenceGhost: Color(0xFF32B5C5),
   };
+  static const Map<PracticeType, IconData> _typeIcons = {
+    PracticeType.bowliards: FontAwesomeIcons.bowlingBall,
+    PracticeType.onePocketGhost: FontAwesomeIcons.ghost,
+    PracticeType.gameDay: FontAwesomeIcons.faceGrinStars,
+    PracticeType.competition: FontAwesomeIcons.trophy,
+    PracticeType.nineBallCredenceGhost: FontAwesomeIcons.bullseye,
+  };
+  static const IconData _multiTypeIcon = FontAwesomeIcons.layerGroup;
 
   @override
   void initState() {
@@ -56,6 +65,21 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Color _colorForType(PracticeType type) => _typeColors[type] ?? Colors.grey;
+  IconData _iconForType(PracticeType type) => _typeIcons[type] ?? Icons.circle;
+
+  Widget _buildMarkerIcon(Color color, IconData icon) {
+    return Container(
+      width: 18,
+      height: 18,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.35),
+        shape: BoxShape.circle,
+        border: Border.all(color: color.withOpacity(0.6), width: 1),
+      ),
+      child: Icon(icon, size: 10, color: color),
+    );
+  }
 
   Future<void> _openDaySessions(DateTime day) async {
     await Navigator.of(
@@ -71,19 +95,31 @@ class _HomeScreenState extends State<HomeScreen> {
     List<PracticeSession> events,
   ) {
     if (events.isEmpty) return null;
-    final markers = events.take(4).map((session) {
-      return Container(
-        width: 8,
-        height: 8,
-        decoration: BoxDecoration(
-          color: _colorForType(session.type),
-          shape: BoxShape.circle,
-        ),
-      );
-    }).toList();
+    final uniqueTypes = events.map((session) => session.type).toSet();
+    if (uniqueTypes.isEmpty) return null;
+
+    final orderedTypes = PracticeType.values
+        .where((type) => uniqueTypes.contains(type))
+        .toList();
+    final theme = Theme.of(context);
+    final markers = orderedTypes.length > 2
+        ? [
+            _buildMarkerIcon(
+              theme.colorScheme.secondary,
+              _multiTypeIcon,
+            ),
+          ]
+        : orderedTypes
+            .map(
+              (type) => _buildMarkerIcon(
+                _colorForType(type),
+                _iconForType(type),
+              ),
+            )
+            .toList();
     return Wrap(
-      spacing: 2,
-      runSpacing: 2,
+      spacing: 4,
+      runSpacing: 4,
       alignment: WrapAlignment.center,
       children: markers,
     );
@@ -97,10 +133,6 @@ class _HomeScreenState extends State<HomeScreen> {
     final localizations = MaterialLocalizations.of(context);
     final dayLabel = localizations.formatFullDate(selectedDay);
     final monthLabel = localizations.formatMonthYear(_focusedDay);
-    final totalMonthSessions = _sessionsByDay.values.fold<int>(
-      0,
-      (sum, list) => sum + list.length,
-    );
     final labelStyle =
         theme.textTheme.labelMedium ?? const TextStyle(color: Colors.white70);
     final bodyStyle =
@@ -109,6 +141,11 @@ class _HomeScreenState extends State<HomeScreen> {
         (theme.textTheme.titleMedium ?? const TextStyle()).copyWith(
           fontWeight: FontWeight.w600,
         );
+    final dayEntrySummary = sessionsForSelectedDay.isEmpty
+      ? 'No entries for this day'
+      : sessionsForSelectedDay.length == 1
+        ? '1 entry on this day'
+        : '${sessionsForSelectedDay.length} entries on this day';
 
     return DecoratedBox(
       decoration: const BoxDecoration(
@@ -133,7 +170,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   Text('PocketNotes', style: theme.textTheme.titleLarge),
                   Text(
-                    'Biliárd edzésnapló',
+                    'Billiards training journal',
                     style: theme.textTheme.labelSmall?.copyWith(
                       color: theme.colorScheme.secondary,
                     ),
@@ -145,7 +182,7 @@ class _HomeScreenState extends State<HomeScreen> {
           actions: [
             IconButton(
               icon: const Icon(Icons.query_stats),
-              tooltip: 'Statisztikák',
+              tooltip: 'Statistics',
               onPressed: () {
                 Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const StatisticsScreen()),
@@ -258,9 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
                                         Text(
-                                          sessionsForSelectedDay.isEmpty
-                                              ? 'Nincs feljegyzés erre a napra'
-                                              : '${sessionsForSelectedDay.length} feljegyzés ezen a napon',
+                                          dayEntrySummary,
                                           style: theme.textTheme.bodyMedium,
                                         ),
                                       ],
@@ -271,7 +306,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     onPressed: () =>
                                         _openDaySessions(selectedDay),
                                     icon: const Icon(Icons.open_in_new),
-                                    label: const Text('Nap megnyitása'),
+                                    label: const Text('Open day'),
                                   ),
                                 ],
                               ),

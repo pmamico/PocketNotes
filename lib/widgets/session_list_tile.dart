@@ -7,11 +7,13 @@ class SessionListTile extends StatelessWidget {
   final PracticeSession session;
   final Color color;
   final VoidCallback onTap;
+  final VoidCallback? onLongPress;
   const SessionListTile({
     super.key,
     required this.session,
     required this.color,
     required this.onTap,
+    this.onLongPress,
   });
 
   @override
@@ -21,18 +23,18 @@ class SessionListTile extends StatelessWidget {
     IconData icon = Icons.event;
     switch (session.type) {
       case PracticeType.bowliards:
-        title = 'Bowliards – ${session.totalScore ?? '-'} pont';
+        title = 'Bowliards – ${session.totalScore ?? '-'} pts';
         icon = FontAwesomeIcons.bowlingBall;
         details.add(
-          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+          'Start: ${TimeOfDay.fromDateTime(session.date).format(context)}',
         );
         break;
       case PracticeType.onePocketGhost:
         final total = session.totalScore?.toString() ?? '-';
-        title = 'One Pocket Ghost – összesen $total pont';
+        title = 'One Pocket Ghost – total $total pts';
         icon = FontAwesomeIcons.ghost;
         details.add(
-          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+          'Start: ${TimeOfDay.fromDateTime(session.date).format(context)}',
         );
         break;
       case PracticeType.nineBallCredenceGhost:
@@ -42,21 +44,21 @@ class SessionListTile extends StatelessWidget {
         title = '9 Ball Credence – $totalCredence';
         icon = FontAwesomeIcons.bullseye;
         details.add(
-          'Kezdés: ${TimeOfDay.fromDateTime(session.date).format(context)}',
+          'Start: ${TimeOfDay.fromDateTime(session.date).format(context)}',
         );
         final avg = session.averageScore;
         if (avg != null) {
-          details.add('Átlag: ${avg.toStringAsFixed(1)} cb');
+          details.add('Average: ${avg.toStringAsFixed(1)} cb');
         }
         break;
       case PracticeType.gameDay:
         final mood = session.gameDayData?.satisfaction;
         final rating = mood == 1
-            ? 'Elégedett'
+            ? 'Satisfied'
             : mood == -1
-            ? 'Elégedetlen'
-            : 'Nincs értékelés';
-        title = 'Játéknap – $rating';
+            ? 'Unsatisfied'
+            : 'No rating';
+        title = 'Game day – $rating';
         icon = FontAwesomeIcons.faceGrinStars;
         break;
       case PracticeType.competition:
@@ -64,10 +66,10 @@ class SessionListTile extends StatelessWidget {
         final rounds = data?.rounds ?? [];
         final wins = rounds.where((r) => r.won == true).length;
         final losses = rounds.where((r) => r.won == false).length;
-        title = 'Verseny – ${data?.eventName ?? 'Ismeretlen'}';
+        title = 'Tournament – ${data?.eventName ?? 'Unknown'}';
         icon = FontAwesomeIcons.trophy;
         if (rounds.isNotEmpty) {
-          details.add('Mérleg: $wins W / $losses L');
+          details.add('Record: $wins W / $losses L');
         }
         final location = data?.location;
         if (location != null && location.isNotEmpty) {
@@ -75,10 +77,10 @@ class SessionListTile extends StatelessWidget {
         }
         final verdictValue = data?.satisfaction;
         final verdict = verdictValue == 1
-            ? 'Elégedett'
+            ? 'Satisfied'
             : verdictValue == -1
-            ? 'Elégedetlen'
-            : 'Nincs értékelés';
+            ? 'Unsatisfied'
+            : 'No rating';
         details.add(verdict);
         break;
     }
@@ -91,6 +93,7 @@ class SessionListTile extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: onTap,
+        onLongPress: onLongPress,
         borderRadius: BorderRadius.circular(20),
         child: Ink(
           padding: const EdgeInsets.all(16),

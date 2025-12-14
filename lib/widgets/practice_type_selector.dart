@@ -15,13 +15,13 @@ class PracticeTypeSelector extends StatelessWidget {
           const Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              'Új bejegyzés',
+              'New entry',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
           ),
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.bowlingBall),
-            title: const Text('Bowliards edzés'),
+            title: const Text('Bowliards drills'),
             onTap: () => onSelected(PracticeType.bowliards),
           ),
           ListTile(
@@ -36,12 +36,12 @@ class PracticeTypeSelector extends StatelessWidget {
           ),
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.faceGrinStars),
-            title: const Text('Játéknap'),
+            title: const Text('Game day'),
             onTap: () => onSelected(PracticeType.gameDay),
           ),
           ListTile(
             leading: const FaIcon(FontAwesomeIcons.trophy),
-            title: const Text('Verseny'),
+            title: const Text('Tournament'),
             onTap: () => onSelected(PracticeType.competition),
           ),
           const SizedBox(height: 8),

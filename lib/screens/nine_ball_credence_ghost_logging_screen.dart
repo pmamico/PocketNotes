@@ -176,8 +176,8 @@ class _NineBallCredenceGhostLoggingScreenState
       appBar: AppBar(
         title: Text(
           widget.initialSession != null
-              ? '9 Ball Credence – Szerkesztés'
-              : '9 Ball Credence – Új bejegyzés',
+              ? '9 Ball Credence – Edit entry'
+              : '9 Ball Credence – New entry',
         ),
       ),
       body: Padding(
@@ -207,7 +207,7 @@ class _NineBallCredenceGhostLoggingScreenState
               children: [
                 TextButton(
                   onPressed: _saving ? null : () => Navigator.of(context).pop(),
-                  child: const Text('Mégse'),
+                  child: const Text('Cancel'),
                 ),
                 Row(
                   children: [
@@ -234,7 +234,7 @@ class _NineBallCredenceGhostLoggingScreenState
                           height: 16,
                           child: CircularProgressIndicator(strokeWidth: 2),
                         )
-                      : const Text('Mentés'),
+                      : const Text('Save'),
                 ),
               ],
             ),
@@ -251,14 +251,14 @@ class _NineBallCredenceGhostLoggingScreenState
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Összpont', style: theme.textTheme.labelMedium),
+            Text('Total score', style: theme.textTheme.labelMedium),
             Text(_formatScore(_totalScore), style: theme.textTheme.titleLarge),
           ],
         ),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Frame átlag', style: theme.textTheme.labelMedium),
+            Text('Frame average', style: theme.textTheme.labelMedium),
             Text(
               _formatScore(_averageScore),
               style: theme.textTheme.titleLarge,
@@ -337,8 +337,8 @@ class _NineBallCredenceGhostLoggingScreenState
       String? disabledHelper,
     }) {
       final helper = !enabled
-          ? (disabledHelper ?? 'Csak az 5 ball után elérhető')
-          : 'Válaszd ki, hogy sikerült-e.';
+          ? (disabledHelper ?? 'Available after a made 5 ball')
+          : 'Mark whether it was made.';
 
       Widget buildButton(String text, bool target) {
         final selected = value == target;
@@ -369,9 +369,9 @@ class _NineBallCredenceGhostLoggingScreenState
           const SizedBox(height: 8),
           Row(
             children: [
-              buildButton('Nincs meg', false),
+              buildButton('Missed', false),
               const SizedBox(width: 8),
-              buildButton('Megvan', true),
+              buildButton('Made', true),
             ],
           ),
           const SizedBox(height: 4),
@@ -414,7 +414,7 @@ class _NineBallCredenceGhostLoggingScreenState
             value: nineCredence,
             color: Colors.lightBlueAccent,
             onChanged: (value) => setState(() => _nineCredences[frame] = value),
-            helperText: 'Ha igazad van, dupla pont jár érte.',
+            helperText: "If you're right, you earn double points.",
           ),
           resultToggle(
             label: '',
@@ -424,13 +424,13 @@ class _NineBallCredenceGhostLoggingScreenState
           ),
         ] else ...[
           Text(
-            'Ha az 5 ball sikerül, fogadhatsz a 9 ballra és dupla pontot kapsz.',
+            'If you make the 5 ball you can bet on the 9 ball for double points.',
             style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
           ),
         ],
         const SizedBox(height: 16),
         Text(
-          'Frame pont: ${_formatScore(frameScore)}',
+          'Frame score: ${_formatScore(frameScore)}',
           style: theme.textTheme.titleMedium,
         ),
       ],

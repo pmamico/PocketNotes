@@ -162,6 +162,39 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
     }
   }
 
+  Future<void> _deleteSession(PracticeSession session) async {
+    final confirmed = await showDialog<bool>(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('Delete entry?'),
+            content: const Text(
+              'This will permanently remove the practice entry.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: const Text('Delete'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
+
+    if (confirmed != true) return;
+
+    await _repository.deleteSession(session.id);
+    if (!mounted) return;
+    await _loadSessions();
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Entry deleted')),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizations = MaterialLocalizations.of(context);
@@ -176,7 +209,9 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
           children: [
             Text(dayLabel),
             Text(
-              '${_sessions.length} feljegyzés',
+              _sessions.length == 1
+                  ? '1 entry'
+                  : '${_sessions.length} entries',
               style: theme.textTheme.labelSmall?.copyWith(
                 color: Colors.white70,
               ),
@@ -194,12 +229,12 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
                   const Icon(Icons.crop_free, size: 40, color: Colors.white54),
                   const SizedBox(height: 8),
                   Text(
-                    'Nincs feljegyzés erre a napra',
+                    'No entries on this day',
                     style: Theme.of(context).textTheme.titleMedium,
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Koppints az "Új bejegyzés" gombra és kezdd el a napot.',
+                    'Tap "New entry" to start logging the day.',
                     textAlign: TextAlign.center,
                     style: Theme.of(
                       context,
@@ -218,13 +253,14 @@ class _DaySessionsScreenState extends State<DaySessionsScreen> {
                   session: session,
                   color: _colorForType(session.type),
                   onTap: () => _editSession(session),
+                  onLongPress: () => _deleteSession(session),
                 );
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _addSession,
         icon: const Icon(Icons.add),
-        label: const Text('Új bejegyzés'),
+        label: const Text('New entry'),
       ),
     );
   }

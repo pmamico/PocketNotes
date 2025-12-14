@@ -87,25 +87,25 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
     final name = _eventNameController.text.trim();
     if (name.isEmpty) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Add meg a verseny nevét.')));
+          .showSnackBar(const SnackBar(content: Text('Enter the tournament name.')));
       return;
     }
     final rating = _satisfaction;
     if (rating == null) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text('Válassz elégedettséget a versenyhez.')));
+          .showSnackBar(const SnackBar(content: Text('Select a satisfaction rating for the tournament.')));
       return;
     }
     final rounds = <CompetitionRound>[];
     for (var i = 0; i < _rounds.length; i++) {
-      final converted = _rounds[i].toRound('Forduló ${i + 1}');
+      final converted = _rounds[i].toRound('Round ${i + 1}');
       if (converted != null) {
         rounds.add(converted);
       }
     }
     if (rounds.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Legalább egy fordulót rögzíts.')),
+        const SnackBar(content: Text('Record at least one round.')),
       );
       return;
     }
@@ -139,7 +139,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
     final dateLabel =
         '${widget.date.year}.${widget.date.month.toString().padLeft(2, '0')}.${widget.date.day.toString().padLeft(2, '0')}';
     return Scaffold(
-      appBar: AppBar(title: Text('Verseny – $dateLabel')),
+      appBar: AppBar(title: Text('Tournament – $dateLabel')),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -153,7 +153,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                       TextField(
                         controller: _eventNameController,
                         decoration: const InputDecoration(
-                          labelText: 'Verseny neve *',
+                          labelText: 'Tournament name *',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -161,7 +161,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                       TextField(
                         controller: _locationController,
                         decoration: const InputDecoration(
-                          labelText: 'Helyszín',
+                          labelText: 'Location',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -169,25 +169,25 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                       TextField(
                         controller: _formatController,
                         decoration: const InputDecoration(
-                          labelText: 'Formátum (pl. race-to-7)',
+                          labelText: 'Format (e.g., race-to-7)',
                           border: OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
-                      Text('Összkép',
+                      Text('Overall feeling',
                           style: Theme.of(context).textTheme.titleSmall),
                       const SizedBox(height: 8),
                       Wrap(
                         spacing: 8,
                         children: [
                           ChoiceChip(
-                            label: const Text('Elégedett'),
+                            label: const Text('Satisfied'),
                             selected: _satisfaction == 1,
                             onSelected: (selected) =>
                                 _toggleSatisfaction(1, selected),
                           ),
                           ChoiceChip(
-                            label: const Text('Elégedetlen'),
+                            label: const Text('Unsatisfied'),
                             selected: _satisfaction == -1,
                             onSelected: (selected) =>
                                 _toggleSatisfaction(-1, selected),
@@ -195,7 +195,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                         ],
                       ),
                       const SizedBox(height: 16),
-                      Text('Fordulók',
+                      Text('Rounds',
                           style: Theme.of(context).textTheme.titleSmall),
                       const SizedBox(height: 8),
                       ..._rounds
@@ -215,14 +215,14 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                       OutlinedButton.icon(
                         onPressed: _addRound,
                         icon: const Icon(Icons.add),
-                        label: const Text('Új forduló'),
+                        label: const Text('Add round'),
                       ),
                       const SizedBox(height: 16),
                       TextField(
                         controller: _noteController,
                         maxLines: 4,
                         decoration: const InputDecoration(
-                          labelText: 'Jegyzet',
+                          labelText: 'Notes',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -236,7 +236,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                 children: [
                   TextButton(
                     onPressed: _saving ? null : () => Navigator.of(context).pop(),
-                    child: const Text('Mégse'),
+                    child: const Text('Cancel'),
                   ),
                   ElevatedButton(
                     onPressed: _saving ? null : _save,
@@ -246,7 +246,7 @@ class _CompetitionLoggingScreenState extends State<CompetitionLoggingScreen> {
                             height: 16,
                             child: CircularProgressIndicator(strokeWidth: 2),
                           )
-                        : const Text('Mentés'),
+                        : const Text('Save'),
                   ),
                 ],
               ),
@@ -340,12 +340,12 @@ class _RoundCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text('Forduló ${index + 1}',
+                Text('Round ${index + 1}',
                     style: Theme.of(context).textTheme.titleSmall),
                 if (onRemove != null)
                   IconButton(
                     icon: const Icon(Icons.delete_outline),
-                    tooltip: 'Forduló törlése',
+                    tooltip: 'Delete round',
                     onPressed: onRemove,
                   ),
               ],
@@ -354,7 +354,7 @@ class _RoundCard extends StatelessWidget {
             TextField(
               controller: data.stageController,
               decoration: const InputDecoration(
-                labelText: 'Megnevezés (pl. Negyeddöntő)',
+                labelText: 'Stage (e.g., Quarterfinal)',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -362,7 +362,7 @@ class _RoundCard extends StatelessWidget {
             TextField(
               controller: data.opponentController,
               decoration: const InputDecoration(
-                labelText: 'Ellenfél',
+                labelText: 'Opponent',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -374,7 +374,7 @@ class _RoundCard extends StatelessWidget {
                     controller: data.myScoreController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: 'Saját pont',
+                      labelText: 'My score',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -385,7 +385,7 @@ class _RoundCard extends StatelessWidget {
                     controller: data.opponentScoreController,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
-                      labelText: 'Ellenfél pont',
+                      labelText: 'Opponent score',
                       border: OutlineInputBorder(),
                     ),
                   ),
@@ -397,7 +397,7 @@ class _RoundCard extends StatelessWidget {
               spacing: 8,
               children: [
                 ChoiceChip(
-                  label: const Text('Győzelem'),
+                  label: const Text('Win'),
                   selected: data.won == true,
                   onSelected: (selected) {
                     data.won = selected ? true : null;
@@ -405,7 +405,7 @@ class _RoundCard extends StatelessWidget {
                   },
                 ),
                 ChoiceChip(
-                  label: const Text('Vereség'),
+                  label: const Text('Loss'),
                   selected: data.won == false,
                   onSelected: (selected) {
                     data.won = selected ? false : null;
@@ -419,7 +419,7 @@ class _RoundCard extends StatelessWidget {
               controller: data.noteController,
               maxLines: 2,
               decoration: const InputDecoration(
-                labelText: 'Megjegyzés',
+                labelText: 'Notes',
                 border: OutlineInputBorder(),
               ),
             ),
